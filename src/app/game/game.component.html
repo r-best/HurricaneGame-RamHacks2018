@@ -1,3 +1,5 @@
-<p>
-  game works!
-</p>
+<canvas #game width="800" height="600"></canvas>
+
+<div #assets id="assets">
+  <img id="background1" (load)="assetLoaded()" src="assets/background.png" />
+</div>
