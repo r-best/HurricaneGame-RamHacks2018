@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren } from '@angular/core';
+import * as clickableData from `./coords.json`;
 
 @Component({
   selector: 'app-game',
@@ -10,19 +11,24 @@ export class GameComponent implements AfterViewInit {
 
     @ViewChild('game') canvasRef: ElementRef;
     @ViewChild('assets') assetsRef: ElementRef;
-    @ViewChild('background1') background1: ElementRef;
+
+    WIDTH: number = 1280;
+    HEIGHT: number = 720;
 
     numAssets: number;
     loadedAssets: number;
-    context: CanvasRenderingContext2D;
 
+    context: CanvasRenderingContext2D;
+    clickables: Clickable[];
+    
     constructor() { }
 
     ngAfterViewInit(){
         this.numAssets = this.assetsRef.nativeElement.childElementCount;
         this.loadedAssets = 0;
         this.context = this.canvasRef.nativeElement.getContext('2d');
-        console.log(this.numAssets + ` asset(s)`)
+        this.clickables = [];
+        console.log(this.numAssets + ` asset(s)`);
     }
 
     /**
@@ -32,13 +38,40 @@ export class GameComponent implements AfterViewInit {
      */
     assetLoaded(): void{
         this.loadedAssets++;
-        console.log('Loaded asset')
+        console.log('Loaded asset ' + this.loadedAssets);
         if(this.loadedAssets == this.numAssets)
             this.initCanvas();
     }
 
     initCanvas(){
-        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, 800, 600);
+        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
+        console.log(clickableData)
+        clickableData.bounds.forEach(bound =>
+            this.clickables.push(new Clickable(
+                bound.points.map(point => new Coordinate(point[0], point[1])),
+                bound.text)
+        ));
+        console.log(this.clickables)
     }
 
+}
+
+class Clickable{
+    points: Coordinate[];
+    text: string;
+
+    constructor(points: Coordinate[], text: string){
+        this.points = points;
+        this.text = text;
+    }
+}
+
+class Coordinate{
+    x: number;
+    y: number;
+
+    constructor(x: number, y: number){
+        this.x = x;
+        this.y = y;
+    }
 }
