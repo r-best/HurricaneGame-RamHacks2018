@@ -29,6 +29,11 @@ export class GameComponent implements AfterViewInit {
         this.context = this.canvasRef.nativeElement.getContext('2d');
         this.clickables = [];
         console.log(this.numAssets + ` asset(s)`);
+        clickableData.bounds.forEach(bound =>
+            this.clickables.push(new Clickable(
+                bound.points.map(point => new Coordinate(point[0], point[1])),
+                bound.text)
+        ));
     }
 
     /**
@@ -40,18 +45,27 @@ export class GameComponent implements AfterViewInit {
         this.loadedAssets++;
         console.log('Loaded asset ' + this.loadedAssets);
         if(this.loadedAssets == this.numAssets)
-            this.initCanvas();
+            this.initGame();
     }
 
-    initCanvas(){
+    /**
+     * Called from assetLoaded() once all assets are done loading,
+     * draws the initial background image and creates all event
+     * listeners required for the game
+     */
+    initGame(): void{
         this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
-        console.log(clickableData)
-        clickableData.bounds.forEach(bound =>
-            this.clickables.push(new Clickable(
-                bound.points.map(point => new Coordinate(point[0], point[1])),
-                bound.text)
-        ));
-        console.log(this.clickables)
+        this.canvasRef.nativeElement.addEventListener("mousemove", () => this.draw(), false)
+    }
+
+    /**
+     * Called on every mouse move event, redraws the background and
+     * draws whatever, if any, Clickables are under the cursor
+     */
+    draw(): void{
+        console.log("Drawing")
+        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
+        this.clickables.forEach(clickable => clickable.draw(this.context));
     }
 
 }
@@ -63,6 +77,16 @@ class Clickable{
     constructor(points: Coordinate[], text: string){
         this.points = points;
         this.text = text;
+    }
+
+    draw(context: CanvasRenderingContext2D){
+        context.beginPath();
+        context.moveTo(this.points[0].x, this.points[0].y);
+        for(let i = 1; i < this.points.length; i++){
+            context.lineTo(this.points[i].x, this.points[i].y);
+        }
+        context.lineTo(this.points[0].x, this.points[0].y);
+        context.stroke();
     }
 }
 
