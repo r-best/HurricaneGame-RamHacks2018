@@ -84,8 +84,10 @@ export class GameComponent implements AfterViewInit {
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
         let temp = this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef);
-        if(isNumber(temp))
+        if(isNumber(temp)){
             this.currentRoom = temp;
+            this.rooms[this.currentRoom].updateProgressBar(this.progressRef);
+        }
     }
 }
 
@@ -119,7 +121,7 @@ class Room{
                 dialogButtonRef.nativeElement.click();
                 if(!this.clickables[i].hasBeenClicked()){
                     this.clicked++;
-                    progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
+                    this.updateProgressBar(progressRef);
                     console.log("progress bar width: " + progressRef.nativeElement.style.width);
                     if(parseInt(progressRef.nativeElement.style.width) < 34) {
                       progressRef.nativeElement.className = "progress-bar bg-danger";
@@ -137,6 +139,10 @@ class Room{
                     return null;
                 }
             }
+    }
+
+    updateProgressBar(progressRef: ElementRef){
+        progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
     }
 }
 
