@@ -24,9 +24,10 @@ export class GameComponent implements AfterViewInit {
     context: CanvasRenderingContext2D;
     rooms: Room[];
     currentRoom: number;
-    text: string;
     
     constructor(private http: Http) {
+        this.rooms = [];
+        this.currentRoom = 0;
         http.get(`assets/coords.json`).pipe(
             map((res: Response) => res.json())
         ).toPromise().then(res =>
@@ -43,8 +44,6 @@ export class GameComponent implements AfterViewInit {
         this.numAssets = this.assetsRef.nativeElement.childElementCount;
         this.loadedAssets = 0;
         this.context = this.canvasRef.nativeElement.getContext('2d');
-        this.rooms = [];
-        this.currentRoom = 0;
         console.log(this.numAssets + ` asset(s)`);
     }
 
@@ -83,7 +82,7 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef, this.text));
+        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef));
         console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
         if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
             this.currentRoom = destination;
@@ -94,6 +93,7 @@ class Room{
     number: number;
     clickables: Clickable[];
     clicked: number;
+    currentText: string;
 
     constructor(number: number, clickables: Clickable[]){
         this.number = number;
@@ -110,12 +110,12 @@ class Room{
             }
     }
 
-    click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef, text: string): number | null{
+    click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
+                this.currentText = this.clickables[i].text;
+                dialogButtonRef.nativeElement.click();
                 if(this.clickables[i].hasBeenClicked()){
-                    text = this.clickables[i].text;
-                    dialogButtonRef.nativeElement.click();
                     if(this.clickables[i].destination)
                         return -1*this.clickables[i].destination;
                     return null;
