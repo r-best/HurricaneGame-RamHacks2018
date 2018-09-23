@@ -55,19 +55,22 @@ export class GameComponent implements AfterViewInit {
      */
     initGame(): void{
         this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
-        this.canvasRef.nativeElement.addEventListener("mousemove", () => this.draw(), false)
+        let rect = this.canvasRef.nativeElement.getBoundingClientRect();
+        this.canvasRef.nativeElement.addEventListener("mousemove", (e: MouseEvent) => this.draw(e.x-rect.left, e.y-rect.top), false)
     }
 
     /**
      * Called on every mouse move event, redraws the background and
      * draws whatever, if any, Clickables are under the cursor
      */
-    draw(): void{
+    draw(x: number, y: number): void{
         console.log("Drawing")
         this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
-        this.clickables.forEach(clickable => clickable.draw(this.context));
+        this.clickables.forEach(clickable => {
+            if(clickable.pointInPolygon(x, y))
+                clickable.draw(this.context)
+        });
     }
-
 }
 
 class Clickable{
@@ -79,7 +82,28 @@ class Clickable{
         this.text = text;
     }
 
-    draw(context: CanvasRenderingContext2D){
+    /**
+     * Ray-casting point-in-polygon algorithm from https://github.com/substack/point-in-polygon
+     * @param {number} x X value of point
+     * @param {number} y Y value of point
+     * @returns {boolean} Boolean for if the given point is within the bounds of the Clickable
+     */
+    pointInPolygon(x: number, y: number): boolean{
+        let inside: boolean = false;
+        let polygon: number[][] = this.points.map(coord => [coord.x, coord.y]);
+        for(let i = 0, j = polygon.length-1; i < polygon.length; j = i++){
+            let xi = polygon[i][0], yi = polygon[i][1];
+            let xj = polygon[j][0], yj = polygon[j][1];
+
+            var intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if(intersect) inside = !inside;
+        }
+
+        return inside;
+    }
+
+    draw(context: CanvasRenderingContext2D): void{
         context.beginPath();
         context.moveTo(this.points[0].x, this.points[0].y);
         for(let i = 1; i < this.points.length; i++){
