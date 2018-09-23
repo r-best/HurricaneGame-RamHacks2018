@@ -115,34 +115,34 @@ class Room{
     click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
-                if(isNumber(this.clickables[i].destination))
-                    return this.clickables[i].destination;
-                this.currentText = this.clickables[i].text;
-                dialogButtonRef.nativeElement.click();
+                if(!isNumber(this.clickables[i].destination)){
+                    this.currentText = this.clickables[i].text;
+                    dialogButtonRef.nativeElement.click();
+                }
                 if(!this.clickables[i].hasBeenClicked()){
                     this.clicked++;
                     this.updateProgressBar(progressRef);
-                    console.log("progress bar width: " + progressRef.nativeElement.style.width);
-                    if(parseInt(progressRef.nativeElement.style.width) < 34) {
-                      progressRef.nativeElement.className = "progress-bar bg-danger";
-                    }
-                    else if(parseInt(progressRef.nativeElement.style.width) < 67) {
-                      progressRef.nativeElement.className = "progress-bar bg-warning";
-                    }
-                    else if(parseInt(progressRef.nativeElement.style.width) < 100) {
-                      progressRef.nativeElement.className = "progress-bar bg-primary";
-                    }
-                    else if(parseInt(progressRef.nativeElement.style.width) < 101) {
-                      progressRef.nativeElement.className = "progress-bar bg-success";
-                    }
                     this.clickables[i].click();
-                    return null;
                 }
+                return isNumber(this.clickables[i].destination) ? this.clickables[i].destination : null;
             }
     }
 
     updateProgressBar(progressRef: ElementRef){
         progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
+        console.log("progress bar width: " + progressRef.nativeElement.style.width);
+        if(parseInt(progressRef.nativeElement.style.width) < 34) {
+          progressRef.nativeElement.className = "progress-bar bg-danger";
+        }
+        else if(parseInt(progressRef.nativeElement.style.width) < 67) {
+          progressRef.nativeElement.className = "progress-bar bg-warning";
+        }
+        else if(parseInt(progressRef.nativeElement.style.width) < 100) {
+          progressRef.nativeElement.className = "progress-bar bg-primary";
+        }
+        else if(parseInt(progressRef.nativeElement.style.width) < 101) {
+          progressRef.nativeElement.className = "progress-bar bg-success";
+        }
     }
 }
 
