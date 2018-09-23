@@ -93,7 +93,7 @@
                         [1199, 489],
                         [969, 449]
                     ],
-                    "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits. Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc. Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car. Make sure that you have jumper cables and extra gas.",
+                    "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits.",
                     "destination": 1
                 },
                 {
@@ -117,7 +117,7 @@
                         [165, 705],
                         [65, 705]
                     ],
-                    "text": ""
+                    "text": "Make sure that you have extra gas for the road in case your car runs out."
                 },
                 {
                     "points": [
@@ -130,7 +130,7 @@
                         [290, 493],
                         [295, 420]
                     ],
-                    "text": ""
+                    "text": "Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car."
                 },
                 {
                     "points": [
@@ -141,7 +141,7 @@
                         [1007, 547],
                         [974, 515]
                     ],
-                    "text": ""
+                    "text": "Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc."
                 },
                 {
                     "points": [
@@ -159,7 +159,7 @@
                         [1083, 609],
                         [1075, 589]
                     ],
-                    "text": ""
+                    "text": "Make sure you have some jumper cables in case your car breaks down or someone else's car breaks down."
                 }
             ]
         }
