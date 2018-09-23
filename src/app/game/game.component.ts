@@ -15,6 +15,8 @@ export class GameComponent implements AfterViewInit {
     @ViewChild('progress') progressRef: ElementRef;
     @ViewChild('dialogButton') dialogButtonRef: ElementRef;
 
+    currentText: string;
+
     WIDTH: number = 1280;
     HEIGHT: number = 720;
 
@@ -86,6 +88,24 @@ export class GameComponent implements AfterViewInit {
         console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
         if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
             this.currentRoom = destination;
+    }
+
+    submitButtonOnClick() {
+      console.log("submit clicked");
+      this.rooms[this.currentRoom].currentText = "worked";
+      if(this.progressRef.nativeElement.className == "progress-bar bg-danger") {
+        this.rooms[this.currentRoom].currentText = "Deciding that you are better than some dumb storm, you attempt to brave the hurricane. Tragically, nothing goes for you. Winds shred your meticulously crafted interior of your house. Your dog ran away seeking a smarter owner who actually prepared for the storm. In a desperate attempt to not feel bad, you turn to your poorly stocked food supplies. Unsurprisingly, you run out of food within a day and are forced to wait for rescue teams to hopefully reach you. While waiting, you are hungry, lonely, and forced to witness your ruined home. If only you had prepared more.";
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-warning") {
+        this.rooms[this.currentRoom].currentText = "Maybe you were sleep deprived. Maybe you did not know better. But your definition of prepared left a lot to be desired. You managed to accomplish some basic tasks but you could have done much better in hurricane-proofing your home. Well, at least you can be content that you tried as your belongings are smashed to bits and drift away."; 
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-primary") {
+        this.rooms[this.currentRoom].currentText = "You've clearly put your heart and at least half of your soul into protecting your life and your home. You followed numerous safety tips and each one helped you survive the storm. Sure you could have done better and you might have both literal and metaphorical scars, but at least you survived to tell the tale of your hurricane survival.";
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-success") {
+        this.rooms[this.currentRoom].currentText = "Congratulations! You took the news seriously and wisely evacuated when you were told to. While you may be out of your home for a bit, at least you can be content that you made your home more impenetrable than fort Knox and that the hurricane will be too intimidated to even approach your home. Too bad the same can not be said about your unwise neighbors. Their homes now resembles mulch. ";
+      }
+      this.dialogButtonRef.nativeElement.click();
     }
 }
 
