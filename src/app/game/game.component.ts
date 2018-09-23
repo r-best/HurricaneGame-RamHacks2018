@@ -12,6 +12,7 @@ export class GameComponent implements AfterViewInit {
 
     @ViewChild('game') canvasRef: ElementRef;
     @ViewChild('assets') assetsRef: ElementRef;
+    @ViewChild('progress') progressRef: ElementRef;
 
     WIDTH: number = 1280;
     HEIGHT: number = 720;
@@ -21,6 +22,7 @@ export class GameComponent implements AfterViewInit {
 
     context: CanvasRenderingContext2D;
     clickables: Clickable[];
+    clicked: number;
     
     constructor(private http: Http) {
         http.get(`assets/coords.json`).pipe(
@@ -39,6 +41,7 @@ export class GameComponent implements AfterViewInit {
         this.loadedAssets = 0;
         this.context = this.canvasRef.nativeElement.getContext('2d');
         this.clickables = [];
+        this.clicked = 0;
         console.log(this.numAssets + ` asset(s)`);
     }
 
@@ -84,7 +87,23 @@ export class GameComponent implements AfterViewInit {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
-                this.clickables[i].click();
+                if(this.clickables[i].click()){
+                    this.clicked++;
+                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`
+                    console.log("progress bar width: " + this.progressRef.nativeElement.style.width);
+                    if(parseInt(this.progressRef.nativeElement.style.width) < 34) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-danger";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 67) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-warning";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 100) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-primary";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 101) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-success";
+                    }
+                }
                 break;
             }
     }
@@ -93,10 +112,12 @@ export class GameComponent implements AfterViewInit {
 class Clickable{
     points: Coordinate[];
     text: string;
+    wasClicked: boolean;
 
     constructor(points: Coordinate[], text: string){
         this.points = points;
         this.text = text;
+        this.wasClicked = false;
     }
 
     /**
@@ -122,6 +143,8 @@ class Clickable{
 
     draw(context: CanvasRenderingContext2D): void{
         context.beginPath();
+        context.lineWidth=5;
+        context.strokeStyle="lime";
         context.moveTo(this.points[0].x, this.points[0].y);
         for(let i = 1; i < this.points.length; i++){
             context.lineTo(this.points[i].x, this.points[i].y);
@@ -130,11 +153,19 @@ class Clickable{
         context.stroke();
     }
 
-    click(): void{
+    /**
+     * @returns true if this Clickable has not been clicked yet,
+     * false if it has
+     */
+    click(): boolean {
         console.log(this.text);
         //data-toggle = "modal";
         //data-target = "#myModal";
         // this.myModal.modal('myModal');
+        if(this.wasClicked)
+            return false;
+        this.wasClicked = true;
+        return true;
     }
 }
 
