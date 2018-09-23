@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { map } from 'rxjs/operators';
+import { isNumber } from 'util';
 
 @Component({
   selector: 'app-game',
@@ -14,6 +15,8 @@ export class GameComponent implements AfterViewInit {
     @ViewChild('assets') assetsRef: ElementRef;
     @ViewChild('progress') progressRef: ElementRef;
     @ViewChild('dialogButton') dialogButtonRef: ElementRef;
+
+    currentText: string;
 
     WIDTH: number = 1280;
     HEIGHT: number = 720;
@@ -82,10 +85,29 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef));
-        console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
-        if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
-            this.currentRoom = destination;
+        let temp = this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef);
+        if(isNumber(temp)){
+            this.currentRoom = temp;
+            this.rooms[this.currentRoom].updateProgressBar(this.progressRef);
+        }
+    }
+
+    submitButtonOnClick() {
+      console.log("submit clicked");
+      this.rooms[this.currentRoom].currentText = "worked";
+      if(this.progressRef.nativeElement.className == "progress-bar bg-danger") {
+        this.rooms[this.currentRoom].currentText = "Deciding that you are better than some dumb storm, you attempt to brave the hurricane. Tragically, nothing goes for you. Winds shred your meticulously crafted interior of your house. Your dog ran away seeking a smarter owner who actually prepared for the storm. In a desperate attempt to not feel bad, you turn to your poorly stocked food supplies. Unsurprisingly, you run out of food within a day and are forced to wait for rescue teams to hopefully reach you. While waiting, you are hungry, lonely, and forced to witness your ruined home. If only you had prepared more.";
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-warning") {
+        this.rooms[this.currentRoom].currentText = "Maybe you were sleep deprived. Maybe you did not know better. But your definition of prepared left a lot to be desired. You managed to accomplish some basic tasks but you could have done much better in hurricane-proofing your home. Well, at least you can be content that you tried as your belongings are smashed to bits and drift away."; 
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-primary") {
+        this.rooms[this.currentRoom].currentText = "You've clearly put your heart and at least half of your soul into protecting your life and your home. You followed numerous safety tips and each one helped you survive the storm. Sure you could have done better and you might have both literal and metaphorical scars, but at least you survived to tell the tale of your hurricane survival.";
+      }
+      else if(this.progressRef.nativeElement.className == "progress-bar bg-success") {
+        this.rooms[this.currentRoom].currentText = "Congratulations! You took the news seriously and wisely evacuated when you were told to. While you may be out of your home for a bit, at least you can be content that you made your home more impenetrable than fort Knox and that the hurricane will be too intimidated to even approach your home. Too bad the same can not be said about your unwise neighbors. Their homes now resembles mulch. ";
+      }
+      this.dialogButtonRef.nativeElement.click();
     }
 }
 
@@ -113,16 +135,13 @@ class Room{
     click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
+                if(isNumber(this.clickables[i].destination))
+                    return this.clickables[i].destination;
                 this.currentText = this.clickables[i].text;
                 dialogButtonRef.nativeElement.click();
-                if(this.clickables[i].hasBeenClicked()){
-                    if(this.clickables[i].destination)
-                        return -1*this.clickables[i].destination;
-                    return null;
-                }
-                else{
+                if(!this.clickables[i].hasBeenClicked()){
                     this.clicked++;
-                    progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
+                    this.updateProgressBar(progressRef);
                     console.log("progress bar width: " + progressRef.nativeElement.style.width);
                     if(parseInt(progressRef.nativeElement.style.width) < 34) {
                       progressRef.nativeElement.className = "progress-bar bg-danger";
@@ -136,9 +155,14 @@ class Room{
                     else if(parseInt(progressRef.nativeElement.style.width) < 101) {
                       progressRef.nativeElement.className = "progress-bar bg-success";
                     }
-                    return this.clickables[i].click(); 
+                    this.clickables[i].click();
+                    return null;
                 }
             }
+    }
+
+    updateProgressBar(progressRef: ElementRef){
+        progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
     }
 }
 
@@ -151,7 +175,7 @@ class Clickable{
     constructor(points: Coordinate[], text: string, destination?: number){
         this.points = points;
         this.text = text;
-        this.destination = destination || null;
+        this.destination = isNumber(destination) ? destination : null
         this.wasClicked = false;
     }
 
@@ -192,10 +216,9 @@ class Clickable{
         context.stroke();
     }
 
-    click(): number | null{
+    click(){
         this.wasClicked = true;
         console.log(this.text);
-        return this.destination;
     }
 
     /**
