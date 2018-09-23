@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren } from '@angular/core';
-import * as clickableData from `./coords.json`;
+import { Http, Response } from '@angular/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
@@ -21,7 +22,17 @@ export class GameComponent implements AfterViewInit {
     context: CanvasRenderingContext2D;
     clickables: Clickable[];
     
-    constructor() { }
+    constructor(private http: Http) {
+        http.get(`assets/coords.json`).pipe(
+            map((res: Response) => res.json())
+        ).toPromise().then(res => {
+            res.bounds.forEach(bound =>
+                this.clickables.push(new Clickable(
+                    bound.points.map(point => new Coordinate(point[0], point[1])),
+                    bound.text)
+            ));
+        });
+    }
 
     ngAfterViewInit(){
         this.numAssets = this.assetsRef.nativeElement.childElementCount;
@@ -29,11 +40,6 @@ export class GameComponent implements AfterViewInit {
         this.context = this.canvasRef.nativeElement.getContext('2d');
         this.clickables = [];
         console.log(this.numAssets + ` asset(s)`);
-        clickableData.bounds.forEach(bound =>
-            this.clickables.push(new Clickable(
-                bound.points.map(point => new Coordinate(point[0], point[1])),
-                bound.text)
-        ));
     }
 
     /**
