@@ -25,10 +25,10 @@
         },
         {
             "points": [
-                [820, 470],
-                [915, 470],
-                [915, 520],
-                [820, 520]
+                [820, 450],
+                [915, 450],
+                [915, 540],
+                [820, 540]
             ],
             "text": "Contact your insurance company to make sure that you have the coverage you want. Also document all of your things so you can prove what was damaged in the incoming hurricane."
         },
@@ -68,7 +68,7 @@
                 [387, 301],
                 [219, 290]
             ],
-            "text": "Stock up on non perishable food items. Running out of food while you are trapped in your house (assuming you weren't told to evacuate) is not a recipe for success."
+            "text": "Stock up on non perishable food items. Running out of food while you are trapped in your house (assuming you weren't told to evacuate) is a recipe for disaster."
         },
         {
             "points": [
