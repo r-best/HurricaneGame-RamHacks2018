@@ -13,6 +13,7 @@ export class GameComponent implements AfterViewInit {
     @ViewChild('game') canvasRef: ElementRef;
     @ViewChild('assets') assetsRef: ElementRef;
     @ViewChild('progress') progressRef: ElementRef;
+    @ViewChild('dialogButton') dialogButtonRef: ElementRef;
 
     WIDTH: number = 1280;
     HEIGHT: number = 720;
@@ -23,6 +24,7 @@ export class GameComponent implements AfterViewInit {
     context: CanvasRenderingContext2D;
     rooms: Room[];
     currentRoom: number;
+    text: string;
     
     constructor(private http: Http) {
         http.get(`assets/coords.json`).pipe(
@@ -81,7 +83,7 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef));
+        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef, this.text));
         console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
         if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
             this.currentRoom = destination;
@@ -108,18 +110,33 @@ class Room{
             }
     }
 
-    click(x: number, y: number, progressBar: ElementRef): number | null{
+    click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef, text: string): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
                 if(this.clickables[i].hasBeenClicked()){
+                    text = this.clickables[i].text;
+                    dialogButtonRef.nativeElement.click();
                     if(this.clickables[i].destination)
                         return -1*this.clickables[i].destination;
                     return null;
                 }
                 else{
                     this.clicked++;
-                    progressBar.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
-                    return this.clickables[i].click();
+                    progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
+                    console.log("progress bar width: " + progressRef.nativeElement.style.width);
+                    if(parseInt(progressRef.nativeElement.style.width) < 34) {
+                      progressRef.nativeElement.className = "progress-bar bg-danger";
+                    }
+                    else if(parseInt(progressRef.nativeElement.style.width) < 67) {
+                      progressRef.nativeElement.className = "progress-bar bg-warning";
+                    }
+                    else if(parseInt(progressRef.nativeElement.style.width) < 100) {
+                      progressRef.nativeElement.className = "progress-bar bg-primary";
+                    }
+                    else if(parseInt(progressRef.nativeElement.style.width) < 101) {
+                      progressRef.nativeElement.className = "progress-bar bg-success";
+                    }
+                    return this.clickables[i].click(); 
                 }
             }
     }
@@ -161,7 +178,12 @@ class Clickable{
     draw(context: CanvasRenderingContext2D): void{
         context.beginPath();
         context.lineWidth=5;
-        context.strokeStyle="lime";
+        if(this.wasClicked) {
+            context.strokeStyle="orange";
+        }
+        else {
+            context.strokeStyle="lime";
+        }
         context.moveTo(this.points[0].x, this.points[0].y);
         for(let i = 1; i < this.points.length; i++){
             context.lineTo(this.points[i].x, this.points[i].y);

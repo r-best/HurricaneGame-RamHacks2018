@@ -8,7 +8,9 @@
     <div class="col-3"></div>
     <div class="col-6">
       <div class="progress center">
-        <div #progress class="progress-bar" role="progressbar" style="width: 0%"></div>
+        <div #progress class="progress-bar bg-success" role="progressbar" style="width: 0%">
+          <span style="overflow: hidden">Hurricane Readiness {{ this.progressRef.nativeElement.style.width }} {{ progress_bar_color }}</span>
+        </div>
       </div>
     </div>
     <div class="col-3"></div>
@@ -22,4 +24,20 @@
 <div #assets id="assets">
   <img id="background0" (load)="assetLoaded()" src="assets/background.png" />
   <img id="background1" (load)="assetLoaded()" src="assets/garage.png" />
+</div>
+<button #dialogButton style="display:none" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{ text }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin: auto">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
