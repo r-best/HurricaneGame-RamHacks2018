@@ -3,7 +3,7 @@
     "height": 600,
     "rooms": [
         {
-            "number": 1,
+            "number": 0,
             "items": [
                 {
                     "points": [
@@ -93,7 +93,8 @@
                         [1199, 489],
                         [969, 449]
                     ],
-                    "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits. Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc. Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car. Make sure that you have jumper cables and extra gas."
+                    "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits. Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc. Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car. Make sure that you have jumper cables and extra gas.",
+                    "destination": 1
                 },
                 {
                     "points": [
@@ -107,7 +108,7 @@
             ]
         },
         {
-            "number": 2,
+            "number": 1,
             "items": [
                 {
                     "points": [

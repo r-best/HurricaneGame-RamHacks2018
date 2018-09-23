@@ -28,10 +28,10 @@ export class GameComponent implements AfterViewInit {
         http.get(`assets/coords.json`).pipe(
             map((res: Response) => res.json())
         ).toPromise().then(res =>
-            res.rooms.forEach(room => this.rooms.unshift(new Room(room.number,
+            res.rooms.forEach(room => this.rooms.push(new Room(room.number,
                 room.items.map(item => new Clickable(
                     item.points.map(point => new Coordinate(point[0], point[1])),
-                    item.text
+                    item.text, item.destination
                 ))
             )))
         );
@@ -42,7 +42,7 @@ export class GameComponent implements AfterViewInit {
         this.loadedAssets = 0;
         this.context = this.canvasRef.nativeElement.getContext('2d');
         this.rooms = [];
-        this.currentRoom = 1;
+        this.currentRoom = 0;
         console.log(this.numAssets + ` asset(s)`);
     }
 
@@ -81,10 +81,10 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let room = this.rooms[this.currentRoom];
-        if(room.click(x, y)){
-            this.progressRef.nativeElement.style.width = `${room.clicked / room.clickables.length * 100}%`;
-        }
+        let destination = this.rooms[this.currentRoom].click(x, y, this.progressRef);
+        console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
+        if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
+            this.currentRoom = destination;
     }
 }
 
@@ -108,15 +108,15 @@ class Room{
             }
     }
 
-    click(x: number, y: number): boolean{
+    click(x: number, y: number, progressBar: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
                 if(this.clickables[i].hasBeenClicked())
-                    return false;
+                    return null;
                 else{
                     this.clicked++;
-                    this.clickables[i].click();
-                    return true;
+                    progressBar.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
+                    return this.clickables[i].click();
                 }
             }
     }
@@ -125,11 +125,13 @@ class Room{
 class Clickable{
     points: Coordinate[];
     text: string;
+    destination: number;
     wasClicked: boolean;
 
-    constructor(points: Coordinate[], text: string){
+    constructor(points: Coordinate[], text: string, destination?: number){
         this.points = points;
         this.text = text;
+        this.destination = destination || null;
         this.wasClicked = false;
     }
 
@@ -165,9 +167,10 @@ class Clickable{
         context.stroke();
     }
 
-    click(): void{
-        console.log(this.text);
+    click(): number | null{
         this.wasClicked = true;
+        console.log(this.text);
+        return this.destination;
     }
 
     /**
