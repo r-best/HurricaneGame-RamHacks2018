@@ -4,11 +4,22 @@
     "bounds": [
         {
             "points": [
-                [160, 460],
-                [250, 460],
-                [270, 550],
-                [320, 670], 
-                [160, 670]
+                [163, 476],
+                [179, 464],
+                [206, 457],
+                [229, 461], 
+                [256, 477],
+                [240, 512],
+                [262, 559],
+                [287, 614],
+                [291, 653],
+                [278, 671],
+                [239, 681],
+                [167, 664],
+                [178, 639],
+                [172, 545],
+                [180, 518],
+                [159, 496]
             ],
             "text": "Make sure that your pet has identification tags."
         },
@@ -23,10 +34,10 @@
         },
         {
             "points": [
-                [725, 300],
-                [830, 290],
-                [830, 405],
-                [730, 400]
+                [725, 290],
+                [840, 280],
+                [840, 405],
+                [720, 400]
             ],
             "text": "Make sure that you have constant up-to-date information about the hurricane in case the intensity or velocity of the storm changes. You can  also get more area-specific hurricane advice from your local news sources. You might also learn about advised or mandatory evacuations and the routes you should take."
         },
