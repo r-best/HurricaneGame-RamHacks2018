@@ -160,6 +160,16 @@
                         [1075, 589]
                     ],
                     "text": "Make sure you have some jumper cables in case your car breaks down or someone else's car breaks down."
+                },
+                {
+                    "points": [
+                        [848, 164],
+                        [970, 164],
+                        [970, 448],
+                        [848, 448]
+                    ],
+                    "text": "",
+                    "destination": 0
                 }
             ]
         }

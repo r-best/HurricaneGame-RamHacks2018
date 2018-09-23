@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { map } from 'rxjs/operators';
+import { isNumber } from 'util';
 
 @Component({
   selector: 'app-game',
@@ -84,10 +85,11 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef));
-        console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
-        if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
-            this.currentRoom = destination;
+        let temp = this.rooms[this.currentRoom].click(x, y, this.progressRef, this.dialogButtonRef);
+        if(isNumber(temp)){
+            this.currentRoom = temp;
+            this.rooms[this.currentRoom].updateProgressBar(this.progressRef);
+        }
     }
 
     submitButtonOnClick() {
@@ -133,16 +135,13 @@ class Room{
     click(x: number, y: number, progressRef: ElementRef, dialogButtonRef: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
+                if(isNumber(this.clickables[i].destination))
+                    return this.clickables[i].destination;
                 this.currentText = this.clickables[i].text;
                 dialogButtonRef.nativeElement.click();
-                if(this.clickables[i].hasBeenClicked()){
-                    if(this.clickables[i].destination)
-                        return -1*this.clickables[i].destination;
-                    return null;
-                }
-                else{
+                if(!this.clickables[i].hasBeenClicked()){
                     this.clicked++;
-                    progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
+                    this.updateProgressBar(progressRef);
                     console.log("progress bar width: " + progressRef.nativeElement.style.width);
                     if(parseInt(progressRef.nativeElement.style.width) < 34) {
                       progressRef.nativeElement.className = "progress-bar bg-danger";
@@ -156,9 +155,14 @@ class Room{
                     else if(parseInt(progressRef.nativeElement.style.width) < 101) {
                       progressRef.nativeElement.className = "progress-bar bg-success";
                     }
-                    return this.clickables[i].click(); 
+                    this.clickables[i].click();
+                    return null;
                 }
             }
+    }
+
+    updateProgressBar(progressRef: ElementRef){
+        progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
     }
 }
 
@@ -171,7 +175,7 @@ class Clickable{
     constructor(points: Coordinate[], text: string, destination?: number){
         this.points = points;
         this.text = text;
-        this.destination = destination || null;
+        this.destination = isNumber(destination) ? destination : null
         this.wasClicked = false;
     }
 
@@ -212,10 +216,9 @@ class Clickable{
         context.stroke();
     }
 
-    click(): number | null{
+    click(){
         this.wasClicked = true;
         console.log(this.text);
-        return this.destination;
     }
 
     /**
