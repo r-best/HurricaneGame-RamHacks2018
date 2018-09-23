@@ -13,6 +13,7 @@ export class GameComponent implements AfterViewInit {
     @ViewChild('game') canvasRef: ElementRef;
     @ViewChild('assets') assetsRef: ElementRef;
     @ViewChild('progress') progressRef: ElementRef;
+    @ViewChild('dialogButton') dialogButtonRef: ElementRef;
 
     WIDTH: number = 1280;
     HEIGHT: number = 720;
@@ -23,6 +24,7 @@ export class GameComponent implements AfterViewInit {
     context: CanvasRenderingContext2D;
     clickables: Clickable[];
     clicked: number;
+    text: string;
     
     constructor(private http: Http) {
         http.get(`assets/coords.json`).pipe(
@@ -87,9 +89,11 @@ export class GameComponent implements AfterViewInit {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
+                this.text = this.clickables[i].text;
+                this.dialogButtonRef.nativeElement.click();
                 if(this.clickables[i].click()){
                     this.clicked++;
-                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`
+                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
                 }
                 break;
             }
