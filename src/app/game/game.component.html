@@ -22,7 +22,8 @@
 </div>
 
 <div #assets id="assets">
-  <img id="background1" (load)="assetLoaded()" src="assets/background.png" />
+  <img id="background0" (load)="assetLoaded()" src="assets/background.png" />
+  <img id="background1" (load)="assetLoaded()" src="assets/garage.png" />
 </div>
 <button #dialogButton style="display:none" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
   Launch demo modal
@@ -32,7 +33,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        {{ text }}
+        {{rooms[currentRoom].currentText}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin: auto">Close</button>
