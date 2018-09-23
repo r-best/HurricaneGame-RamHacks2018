@@ -1,105 +1,167 @@
 {
     "width": 800,
     "height": 600,
-    "bounds": [
+    "rooms": [
         {
-            "points": [
-                [163, 476],
-                [179, 464],
-                [206, 457],
-                [229, 461], 
-                [256, 477],
-                [240, 512],
-                [262, 559],
-                [287, 614],
-                [291, 653],
-                [278, 671],
-                [239, 681],
-                [167, 664],
-                [178, 639],
-                [172, 545],
-                [180, 518],
-                [159, 496]
-            ],
-            "text": "Make sure that your pet has identification tags to avoid losing it. If you need to evacuate, make sure to bring your pets."
+            "number": 0,
+            "items": [
+                {
+                    "points": [
+                        [163, 476],
+                        [179, 464],
+                        [206, 457],
+                        [229, 461], 
+                        [256, 477],
+                        [240, 512],
+                        [262, 559],
+                        [287, 614],
+                        [291, 653],
+                        [278, 671],
+                        [239, 681],
+                        [167, 664],
+                        [178, 639],
+                        [172, 545],
+                        [180, 518],
+                        [159, 496]
+                    ],
+                    "text": "Make sure that your pet has identification tags to avoid losing it. If you need to evacuate, make sure to bring your pets."
+                },
+                {
+                    "points": [
+                        [820, 470],
+                        [915, 470],
+                        [915, 520],
+                        [820, 520]
+                    ],
+                    "text": "Contact your insurance company to make sure that you have the coverage you want. Also document all of your things so you can prove what was damaged in the incoming hurricane."
+                },
+                {
+                    "points": [
+                        [725, 290],
+                        [840, 280],
+                        [840, 405],
+                        [720, 400]
+                    ],
+                    "text": "Make sure that you have constant up-to-date information about the hurricane in case the intensity or velocity of the storm changes. You can  also get more area-specific hurricane advice from your local news sources. You might also learn about advised or mandatory evacuations and the routes you should take."
+                },
+                {
+                    "points": [
+                        [1205, 490],
+                        [1270, 490],
+                        [1270, 640],
+                        [1205, 640]
+                    ],
+                    "text": "Ensure that you have a fire extinguisher in your house that is easily accessible and not expired."
+                },
+                {
+                    "points":[
+                        [213, 303],
+                        [309, 307],
+                        [308, 474],
+                        [216, 485]
+                    ],
+                    "text": "Get as much water as possible. Fill up spare water bottles and/or purchase bottled water."
+                },
+                {
+                    "points": [
+                        [224, 218],
+                        [468, 242],
+                        [468, 336],
+                        [385, 337],
+                        [387, 301],
+                        [219, 290]
+                    ],
+                    "text": "Stock up on non perishable food items. Running out of food while you are trapped in your house (assuming you weren't told to evacuate) is not a recipe for success."
+                },
+                {
+                    "points": [
+                        [697, 245],
+                        [890, 200],
+                        [887, 415],
+                        [833, 400],
+                        [834, 279],
+                        [728, 293],
+                        [725, 391],
+                        [694, 391]
+                    ],
+                    "text": "Ensure that you have a medkit in your house that is easily accessible and full of non expired items. Stock up on batteries and flashlights. Said batteries should be used to ensure that your smoke detectors and carbon monoxide detectors are all fully operational."
+                },
+                {
+                    "points":[
+                        [986, 158],
+                        [1196, 108],
+                        [1199, 489],
+                        [969, 449]
+                    ],
+                    "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits.",
+                    "destination": 1
+                },
+                {
+                    "points": [
+                        [3, 27],
+                        [157, 172],
+                        [162, 522],
+                        [8, 704]
+                    ],
+                    "text": "You should install plywood sheets on the outside of your windows or board your windows up. This will lower the chances that debris will get hurtled into your home and cause easil preventable internal property damage. Do not open your windows during a storm. Contrary to popular belief, opening windows increases the pressure inside your house and can increase internal property damage as winds become more violent and have unrestricted access to your things."
+                }
+            ]
         },
         {
-            "points": [
-                [820, 450],
-                [915, 450],
-                [915, 540],
-                [820, 540]
-            ],
-            "text": "Contact your insurance company to make sure that you have the coverage you want. Also document all of your things so you can prove what was damaged in the incoming hurricane."
-        },
-        {
-            "points": [
-                [725, 290],
-                [840, 280],
-                [840, 405],
-                [720, 400]
-            ],
-            "text": "Make sure that you have constant up-to-date information about the hurricane in case the intensity or velocity of the storm changes. You can  also get more area-specific hurricane advice from your local news sources. You might also learn about advised or mandatory evacuations and the routes you should take."
-        },
-        {
-            "points": [
-                [1205, 490],
-                [1270, 490],
-                [1270, 640],
-                [1205, 640]
-            ],
-            "text": "Ensure that you have a fire extinguisher in your house that is easily accessible and not expired."
-        },
-        {
-            "points":[
-                [213, 303],
-                [309, 307],
-                [308, 474],
-                [216, 485]
-            ],
-            "text": "Get as much water as possible. Fill up spare water bottles and/or purchase bottled water."
-        },
-        {
-            "points": [
-                [224, 218],
-                [468, 242],
-                [468, 336],
-                [385, 337],
-                [387, 301],
-                [219, 290]
-            ],
-            "text": "Stock up on non perishable food items. Running out of food while you are trapped in your house (assuming you weren't told to evacuate) is a recipe for disaster."
-        },
-        {
-            "points": [
-                [697, 245],
-                [890, 200],
-                [887, 415],
-                [833, 400],
-                [834, 279],
-                [728, 293],
-                [725, 391],
-                [694, 391]
-            ],
-            "text": "Ensure that you have a medkit in your house that is easily accessible and full of non expired items. Stock up on batteries and flashlights. Said batteries should be used to ensure that your smoke detectors and carbon monoxide detectors are all fully operational."
-        },
-        {
-            "points":[
-                [986, 158],
-                [1196, 108],
-                [1199, 489],
-                [969, 449]
-            ],
-            "text": "If you are told evacuate, then evacuate. These decisions are made for your safety and can easily save your life. Make sure to leave before the storm hits. Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc. Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car. Make sure that you have jumper cables and extra gas."
-        },
-        {
-            "points": [
-                [3, 27],
-                [157, 172],
-                [162, 522],
-                [8, 704]
-            ],
-            "text": "You should install plywood sheets on the outside of your windows or board your windows up. This will lower the chances that debris will get hurtled into your home and cause easil preventable internal property damage. Do not open your windows during a storm. Contrary to popular belief, opening windows increases the pressure inside your house and can increase internal property damage as winds become more violent and have unrestricted access to your things."
+            "number": 1,
+            "items": [
+                {
+                    "points": [
+                        [65, 555],
+                        [165, 555],
+                        [165, 705],
+                        [65, 705]
+                    ],
+                    "text": "Make sure that you have extra gas for the road in case your car runs out."
+                },
+                {
+                    "points": [
+                        [380, 295],
+                        [610, 295],
+                        [680, 400],
+                        [697, 468],
+                        [692, 649],
+                        [305, 647],
+                        [290, 493],
+                        [295, 420]
+                    ],
+                    "text": "Make sure that your car is well stocked. Include a basic survival kit, food, and blankets in case you get trapped in your car."
+                },
+                {
+                    "points": [
+                        [965, 422],
+                        [1082, 418],
+                        [1131, 439],
+                        [1114, 531],
+                        [1007, 547],
+                        [974, 515]
+                    ],
+                    "text": "Move all of your outside items inside. This includes trashcans, recycling bins, toys, lawn ornaments, etc."
+                },
+                {
+                    "points": [
+                        [1080, 560],
+                        [1104, 555],
+                        [1130, 555],
+                        [1185, 569],
+                        [1205, 596],
+                        [1214, 618],
+                        [1195, 634],
+                        [1155, 634],
+                        [1132, 643],
+                        [1115, 648],
+                        [1092, 636],
+                        [1083, 609],
+                        [1075, 589]
+                    ],
+                    "text": "Make sure you have some jumper cables in case your car breaks down or someone else's car breaks down."
+                }
+            ]
         }
     ]
 }
