@@ -122,7 +122,7 @@ class Room{
                 }
                 else{
                     this.clicked++;
-                    progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
+                    progressRef.nativeElement.style.width = `${Math.round(this.clicked / this.clickables.length * 100)}%`;
                     console.log("progress bar width: " + progressRef.nativeElement.style.width);
                     if(parseInt(progressRef.nativeElement.style.width) < 34) {
                       progressRef.nativeElement.className = "progress-bar bg-danger";
