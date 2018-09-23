@@ -63,6 +63,7 @@ export class GameComponent implements AfterViewInit {
         this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
         let rect = this.canvasRef.nativeElement.getBoundingClientRect();
         this.canvasRef.nativeElement.addEventListener("mousemove", (e: MouseEvent) => this.draw(e.x-rect.left, e.y-rect.top), false);
+        this.canvasRef.nativeElement.addEventListener("mouseup", (e: MouseEvent) => this.click(e.x-rect.left, e.y-rect.top), false);
     }
 
     /**
@@ -75,6 +76,15 @@ export class GameComponent implements AfterViewInit {
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
                 this.clickables[i].draw(this.context);
+                break;
+            }
+    }
+
+    click(x: number, y: number): void {
+        console.log("Clicking at point (" +x+ ", " +y+ ")");
+        for(let i = 0; i < this.clickables.length; i++)
+            if(this.clickables[i].pointInPolygon(x, y)){
+                this.clickables[i].click();
                 break;
             }
     }
@@ -118,6 +128,10 @@ class Clickable{
         }
         context.lineTo(this.points[0].x, this.points[0].y);
         context.stroke();
+    }
+
+    click(): void{
+        console.log(this.text);
     }
 }
 
