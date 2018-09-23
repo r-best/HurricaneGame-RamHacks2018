@@ -154,7 +154,6 @@ class Clickable{
      * false if it has
      */
     click(): boolean {
-        console.log(this.text);
         if(this.wasClicked)
             return false;
         this.wasClicked = true;
