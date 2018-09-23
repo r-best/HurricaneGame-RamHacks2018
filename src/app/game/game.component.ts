@@ -132,6 +132,9 @@ class Clickable{
 
     click(): void{
         console.log(this.text);
+        //data-toggle = "modal";
+        //data-target = "#myModal";
+        // this.myModal.modal('myModal');
     }
 }
 
