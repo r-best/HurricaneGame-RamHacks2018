@@ -93,7 +93,20 @@ export class GameComponent implements AfterViewInit {
                 this.dialogButtonRef.nativeElement.click();
                 if(this.clickables[i].click()){
                     this.clicked++;
-                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
+                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`
+                    console.log("progress bar width: " + this.progressRef.nativeElement.style.width);
+                    if(parseInt(this.progressRef.nativeElement.style.width) < 34) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-danger";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 67) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-warning";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 100) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-primary";
+                    }
+                    else if(parseInt(this.progressRef.nativeElement.style.width) < 101) {
+                      this.progressRef.nativeElement.className = "progress-bar bg-success";
+                    }
                 }
                 break;
             }
