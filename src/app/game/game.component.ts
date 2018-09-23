@@ -81,7 +81,7 @@ export class GameComponent implements AfterViewInit {
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
-        let destination = this.rooms[this.currentRoom].click(x, y, this.progressRef);
+        let destination = Math.abs(this.rooms[this.currentRoom].click(x, y, this.progressRef));
         console.log(this.rooms[this.currentRoom].clicked, this.rooms[this.currentRoom].clickables.length)
         if(destination && this.rooms[this.currentRoom].clicked == this.rooms[this.currentRoom].clickables.length)
             this.currentRoom = destination;
@@ -111,8 +111,11 @@ class Room{
     click(x: number, y: number, progressBar: ElementRef): number | null{
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
-                if(this.clickables[i].hasBeenClicked())
+                if(this.clickables[i].hasBeenClicked()){
+                    if(this.clickables[i].destination)
+                        return -1*this.clickables[i].destination;
                     return null;
+                }
                 else{
                     this.clicked++;
                     progressBar.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`;
