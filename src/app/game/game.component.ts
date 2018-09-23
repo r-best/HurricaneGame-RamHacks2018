@@ -89,6 +89,7 @@ export class GameComponent implements AfterViewInit {
         if(isNumber(temp)){
             this.currentRoom = temp;
             this.rooms[this.currentRoom].updateProgressBar(this.progressRef);
+            this.context.drawImage(<HTMLImageElement>document.getElementById(`background${this.currentRoom}`), 0, 0, this.WIDTH, this.HEIGHT);
         }
     }
 
