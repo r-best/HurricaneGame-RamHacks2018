@@ -122,6 +122,8 @@ class Clickable{
 
     draw(context: CanvasRenderingContext2D): void{
         context.beginPath();
+        context.lineWidth=5;
+        context.strokeStyle="lime";
         context.moveTo(this.points[0].x, this.points[0].y);
         for(let i = 1; i < this.points.length; i++){
             context.lineTo(this.points[i].x, this.points[i].y);
