@@ -21,27 +21,28 @@ export class GameComponent implements AfterViewInit {
     loadedAssets: number;
 
     context: CanvasRenderingContext2D;
-    clickables: Clickable[];
-    clicked: number;
+    rooms: Room[];
+    currentRoom: number;
     
     constructor(private http: Http) {
         http.get(`assets/coords.json`).pipe(
             map((res: Response) => res.json())
-        ).toPromise().then(res => {
-            res.bounds.forEach(bound =>
-                this.clickables.push(new Clickable(
-                    bound.points.map(point => new Coordinate(point[0], point[1])),
-                    bound.text)
-            ));
-        });
+        ).toPromise().then(res =>
+            res.rooms.forEach(room => this.rooms.unshift(new Room(room.number,
+                room.items.map(item => new Clickable(
+                    item.points.map(point => new Coordinate(point[0], point[1])),
+                    item.text
+                ))
+            )))
+        );
     }
 
     ngAfterViewInit(){
         this.numAssets = this.assetsRef.nativeElement.childElementCount;
         this.loadedAssets = 0;
         this.context = this.canvasRef.nativeElement.getContext('2d');
-        this.clickables = [];
-        this.clicked = 0;
+        this.rooms = [];
+        this.currentRoom = 1;
         console.log(this.numAssets + ` asset(s)`);
     }
 
@@ -63,7 +64,7 @@ export class GameComponent implements AfterViewInit {
      * listeners required for the game
      */
     initGame(): void{
-        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
+        this.context.drawImage(<HTMLImageElement>document.getElementById(`background${this.currentRoom}`), 0, 0, this.WIDTH, this.HEIGHT);
         let rect = this.canvasRef.nativeElement.getBoundingClientRect();
         this.canvasRef.nativeElement.addEventListener("mousemove", (e: MouseEvent) => this.draw(e.x-rect.left, e.y-rect.top), false);
         this.canvasRef.nativeElement.addEventListener("mouseup", (e: MouseEvent) => this.click(e.x-rect.left, e.y-rect.top), false);
@@ -74,24 +75,49 @@ export class GameComponent implements AfterViewInit {
      * draws whatever, if any, Clickables are under the cursor
      */
     draw(x: number, y: number): void{
-        console.log("Drawing")
-        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
-        for(let i = 0; i < this.clickables.length; i++)
-            if(this.clickables[i].pointInPolygon(x, y)){
-                this.clickables[i].draw(this.context);
-                break;
-            }
+        console.log("Drawing");
+        this.rooms[this.currentRoom].draw(this.context, x, y, this.WIDTH, this.HEIGHT);
     }
 
     click(x: number, y: number): void {
         console.log("Clicking at point (" +x+ ", " +y+ ")");
+        let room = this.rooms[this.currentRoom];
+        if(room.click(x, y)){
+            this.progressRef.nativeElement.style.width = `${room.clicked / room.clickables.length * 100}%`;
+        }
+    }
+}
+
+class Room{
+    number: number;
+    clickables: Clickable[];
+    clicked: number;
+
+    constructor(number: number, clickables: Clickable[]){
+        this.number = number;
+        this.clickables = clickables;
+        this.clicked = 0;
+    }
+
+    draw(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void{
+        context.drawImage(<HTMLImageElement>document.getElementById(`background${this.number}`), 0, 0, w, h);
         for(let i = 0; i < this.clickables.length; i++)
             if(this.clickables[i].pointInPolygon(x, y)){
-                if(this.clickables[i].click()){
-                    this.clicked++;
-                    this.progressRef.nativeElement.style.width = `${this.clicked / this.clickables.length * 100}%`
-                }
+                this.clickables[i].draw(context);
                 break;
+            }
+    }
+
+    click(x: number, y: number): boolean{
+        for(let i = 0; i < this.clickables.length; i++)
+            if(this.clickables[i].pointInPolygon(x, y)){
+                if(this.clickables[i].hasBeenClicked())
+                    return false;
+                else{
+                    this.clicked++;
+                    this.clickables[i].click();
+                    return true;
+                }
             }
     }
 }
@@ -124,7 +150,6 @@ class Clickable{
                 && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
             if(intersect) inside = !inside;
         }
-
         return inside;
     }
 
@@ -140,16 +165,17 @@ class Clickable{
         context.stroke();
     }
 
+    click(): void{
+        console.log(this.text);
+        this.wasClicked = true;
+    }
+
     /**
      * @returns true if this Clickable has not been clicked yet,
      * false if it has
      */
-    click(): boolean {
-        console.log(this.text);
-        if(this.wasClicked)
-            return false;
-        this.wasClicked = true;
-        return true;
+    hasBeenClicked(): boolean {
+        return this.wasClicked;
     }
 }
 
