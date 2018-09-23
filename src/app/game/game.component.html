@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col center">
+      <h1>Don't Be Slain By The Hurricane</h1>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-3"></div>
+    <div class="col-6">
+      <div class="progress center">
+        <div #progress class="progress-bar" role="progressbar" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="col-3"></div>
+  </div>
+</div>
+
+<div class="center">
+  <canvas #game width="{{WIDTH}}" height="{{HEIGHT}}"></canvas>
+</div>
+
+<div #assets id="assets">
+  <img id="background1" (load)="assetLoaded()" src="assets/background.png" />
+</div>
+
+<button #dialogButton style="display:none" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{ text }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin: auto">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
