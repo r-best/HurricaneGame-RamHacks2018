@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren } from '@angular/core';
-import * as clickableData from `./coords.json`;
+import { Http, Response } from '@angular/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
@@ -21,7 +22,17 @@ export class GameComponent implements AfterViewInit {
     context: CanvasRenderingContext2D;
     clickables: Clickable[];
     
-    constructor() { }
+    constructor(private http: Http) {
+        http.get(`assets/coords.json`).pipe(
+            map((res: Response) => res.json())
+        ).toPromise().then(res => {
+            res.bounds.forEach(bound =>
+                this.clickables.push(new Clickable(
+                    bound.points.map(point => new Coordinate(point[0], point[1])),
+                    bound.text)
+            ));
+        });
+    }
 
     ngAfterViewInit(){
         this.numAssets = this.assetsRef.nativeElement.childElementCount;
@@ -40,20 +51,33 @@ export class GameComponent implements AfterViewInit {
         this.loadedAssets++;
         console.log('Loaded asset ' + this.loadedAssets);
         if(this.loadedAssets == this.numAssets)
-            this.initCanvas();
+            this.initGame();
     }
 
-    initCanvas(){
+    /**
+     * Called from assetLoaded() once all assets are done loading,
+     * draws the initial background image and creates all event
+     * listeners required for the game
+     */
+    initGame(): void{
         this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
-        console.log(clickableData)
-        clickableData.bounds.forEach(bound =>
-            this.clickables.push(new Clickable(
-                bound.points.map(point => new Coordinate(point[0], point[1])),
-                bound.text)
-        ));
-        console.log(this.clickables)
+        let rect = this.canvasRef.nativeElement.getBoundingClientRect();
+        this.canvasRef.nativeElement.addEventListener("mousemove", (e: MouseEvent) => this.draw(e.x-rect.left, e.y-rect.top), false);
     }
 
+    /**
+     * Called on every mouse move event, redraws the background and
+     * draws whatever, if any, Clickables are under the cursor
+     */
+    draw(x: number, y: number): void{
+        console.log("Drawing")
+        this.context.drawImage(<HTMLImageElement>document.getElementById(`background1`), 0, 0, this.WIDTH, this.HEIGHT);
+        for(let i = 0; i < this.clickables.length; i++)
+            if(this.clickables[i].pointInPolygon(x, y)){
+                this.clickables[i].draw(this.context);
+                break;
+            }
+    }
 }
 
 class Clickable{
@@ -63,6 +87,37 @@ class Clickable{
     constructor(points: Coordinate[], text: string){
         this.points = points;
         this.text = text;
+    }
+
+    /**
+     * Ray-casting point-in-polygon algorithm from https://github.com/substack/point-in-polygon
+     * @param {number} x X value of point
+     * @param {number} y Y value of point
+     * @returns {boolean} Boolean for if the given point is within the bounds of the Clickable
+     */
+    pointInPolygon(x: number, y: number): boolean{
+        let inside: boolean = false;
+        let polygon: number[][] = this.points.map(coord => [coord.x, coord.y]);
+        for(let i = 0, j = polygon.length-1; i < polygon.length; j = i++){
+            let xi = polygon[i][0], yi = polygon[i][1];
+            let xj = polygon[j][0], yj = polygon[j][1];
+
+            var intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if(intersect) inside = !inside;
+        }
+
+        return inside;
+    }
+
+    draw(context: CanvasRenderingContext2D): void{
+        context.beginPath();
+        context.moveTo(this.points[0].x, this.points[0].y);
+        for(let i = 1; i < this.points.length; i++){
+            context.lineTo(this.points[i].x, this.points[i].y);
+        }
+        context.lineTo(this.points[0].x, this.points[0].y);
+        context.stroke();
     }
 }
 
